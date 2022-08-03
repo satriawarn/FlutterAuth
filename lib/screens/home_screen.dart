@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterauth/provider/sign_in_provider.dart';
+import 'package:flutterauth/screens/image_upload_screen.dart';
 import 'package:flutterauth/screens/login_screen.dart';
+import 'package:flutterauth/screens/show_images.dart';
 import 'package:flutterauth/utils/next_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -74,7 +76,44 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+                onPressed: () {
+                  nextScreen(
+                      context,
+                      ImageUpload(
+                        userId: sp.uid,
+                      ));
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text(
+                  "Upload Image",
+                  style: TextStyle(color: Colors.white),
+                )),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                nextScreen(context, ShowUploads(
+                  userId: sp.uid,
+                ));
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text(
+                "Show Image",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
             ElevatedButton(
               onPressed: () {
                 sp.userSignOut();
