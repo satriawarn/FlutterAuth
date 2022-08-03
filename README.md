@@ -4,13 +4,8 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is an authentication application using Firebase.</br>
+There are some method to get authentication like using Gmail, Facebook Account, and Phone Number.</br>
+Saving all records to cloud firestore.</br>
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Follow this [link](https://www.youtube.com/c/BackSlashFlutter/videos) for more tutorial and information.
