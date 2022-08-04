@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterauth/provider/sign_in_provider.dart';
+import 'package:flutterauth/screens/google_maps.dart';
 import 'package:flutterauth/screens/image_upload_screen.dart';
 import 'package:flutterauth/screens/login_screen.dart';
 import 'package:flutterauth/screens/show_images.dart';
@@ -180,23 +181,24 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 20,
             ),
             TextButton(
-                onPressed: () {
-                  _analytics.logEvent(
-                      name: 'Upload Image Click', parameters: null);
+              onPressed: () {
+                _analytics.logEvent(
+                    name: 'Upload Image Click', parameters: null);
 
-                  nextScreen(
-                      context,
-                      ImageUpload(
-                        userId: sp.uid,
-                      ));
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text(
-                  "Upload Image",
-                  style: TextStyle(color: Colors.white),
-                )),
+                nextScreen(
+                    context,
+                    ImageUpload(
+                      userId: sp.uid,
+                    ));
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text(
+                "Upload Image",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -213,6 +215,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: const Text(
                 "Show Image",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                nextScreen(context, const GoogleMapsScreen());
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.greenAccent,
+              ),
+              child: const Text(
+                "Open Google Maps",
                 style: TextStyle(color: Colors.white),
               ),
             ),
