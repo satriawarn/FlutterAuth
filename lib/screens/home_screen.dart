@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final FirebaseMessaging _messaging;
+  late final FirebaseAnalytics _analytics;
   late int _totalNotificationCounter;
 
   PushNotification? _notificationInfo;
+
+  void analyticsInstance() async {
+    print("firebase analytics initialize");
+    await Firebase.initializeApp();
+    _analytics = FirebaseAnalytics.instance;
+    // await FirebaseAnalytics.instance.logBeginCheckout(
+    //     value: 10.0,
+    //     currency: 'USD',
+    //     items: [
+    //       AnalyticsEventItem(
+    //           itemName: 'Socks', itemId: 'xjw73ndnw', price: 10.0),
+    //     ],
+    //     coupon: '10PERCENTOFF');
+  }
 
   void registerNotification() async {
     await Firebase.initializeApp();
@@ -82,6 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    //initiate analytics
+    analyticsInstance();
+
     //when app is in background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       PushNotification notification = PushNotification(
@@ -162,6 +181,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TextButton(
                 onPressed: () {
+                  _analytics.logEvent(
+                      name: 'Upload Image Click', parameters: null);
+
                   nextScreen(
                       context,
                       ImageUpload(
