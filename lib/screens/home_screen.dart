@@ -8,6 +8,7 @@ import 'package:flutterauth/screens/image_upload_screen.dart';
 import 'package:flutterauth/screens/login_screen.dart';
 import 'package:flutterauth/screens/show_images.dart';
 import 'package:flutterauth/utils/next_screen.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../model/push_notification.dart';
@@ -26,18 +27,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   PushNotification? _notificationInfo;
 
+  late BannerAd _bannerAd;
+  bool _isAdLoaded = false;
+
+  _initBannerAd() {
+    _bannerAd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: 'ca-app-pub-2055621803749287/7823122920',
+        listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _isAdLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            print("${error.code}");
+            print("${error.responseInfo}");
+            print(error.message);
+          },
+        ),
+        request: const AdRequest());
+    _bannerAd.load();
+  }
+
   void analyticsInstance() async {
     print("firebase analytics initialize");
     await Firebase.initializeApp();
     _analytics = FirebaseAnalytics.instance;
-    // await FirebaseAnalytics.instance.logBeginCheckout(
-    //     value: 10.0,
-    //     currency: 'USD',
-    //     items: [
-    //       AnalyticsEventItem(
-    //           itemName: 'Socks', itemId: 'xjw73ndnw', price: 10.0),
-    //     ],
-    //     coupon: '10PERCENTOFF');
+    _analytics.logBeginCheckout(
+        value: 10.0,
+        currency: 'USD',
+        items: [
+          AnalyticsEventItem(
+              itemName: 'Socks', itemId: 'xjw73ndnw', price: 10.0),
+        ],
+        coupon: '10PERCENTOFF');
   }
 
   void registerNotification() async {
@@ -122,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // when app is in terminated state
     checkForInitialMessage();
 
+    _initBannerAd();
     getData();
     super.initState();
   }
@@ -249,6 +274,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: _isAdLoaded
+          ? Container(
+              height: _bannerAd.size.height.toDouble(),
+              width: _bannerAd.size.width.toDouble(),
+              child: AdWidget(ad: _bannerAd),
+            )
+          : const SizedBox(),
     );
   }
 }
