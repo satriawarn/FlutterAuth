@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           create: ((context) => InternetProvider()),
         ),
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         home: SplashScreen(),
         debugShowCheckedModeBanner: false,
       ),

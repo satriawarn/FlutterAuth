@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterauth/provider/sign_in_provider.dart';
 import 'package:flutterauth/screens/image_upload_screen.dart';
@@ -5,6 +7,8 @@ import 'package:flutterauth/screens/login_screen.dart';
 import 'package:flutterauth/screens/show_images.dart';
 import 'package:flutterauth/utils/next_screen.dart';
 import 'package:provider/provider.dart';
+
+import '../model/push_notification.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,6 +18,63 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final FirebaseMessaging _messaging;
+  late int _totalNotificationCounter;
+
+  PushNotification? _notificationInfo;
+
+  void registerNotification() async {
+    await Firebase.initializeApp();
+
+    _messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("user granted permissions");
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        PushNotification notification = PushNotification(
+          title: message.notification!.title,
+          body: message.notification!.body,
+          dataBody: message.data['body'],
+          dataTitle: message.data['title'],
+        );
+
+        setState(() {
+          // _totalNotificationCounter++;
+          _notificationInfo = notification;
+        });
+      });
+    } else {
+      print("permission denied");
+    }
+  }
+
+  checkForInitialMessage() async {
+    await Firebase.initializeApp();
+
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      PushNotification notification = PushNotification(
+        title: initialMessage.notification!.title,
+        body: initialMessage.notification!.body,
+        dataBody: initialMessage.data['body'],
+        dataTitle: initialMessage.data['title'],
+      );
+
+      setState(() {
+        _notificationInfo = notification;
+      });
+    }
+  }
+
   Future getData() async {
     final sp = context.read<SignInProvider>();
     sp.getDataFromSharedPreferences();
@@ -21,8 +82,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    super.initState();
+    //when app is in background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      PushNotification notification = PushNotification(
+        title: message.notification!.title,
+        body: message.notification!.body,
+        dataBody: message.data['body'],
+        dataTitle: message.data['title'],
+      );
+
+      setState(() {
+        _notificationInfo = notification;
+      });
+    });
+
+    //normal nofitication
+    registerNotification();
+
+    // when app is in terminated state
+    checkForInitialMessage();
+
     getData();
+    super.initState();
   }
 
   @override
@@ -99,9 +180,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TextButton(
               onPressed: () {
-                nextScreen(context, ShowUploads(
-                  userId: sp.uid,
-                ));
+                nextScreen(
+                    context,
+                    ShowUploads(
+                      userId: sp.uid,
+                    ));
               },
               style: TextButton.styleFrom(
                 backgroundColor: Colors.red,
