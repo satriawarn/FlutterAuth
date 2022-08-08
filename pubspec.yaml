@@ -33,6 +33,7 @@ dependencies:
   provider: ^6.0.3
   rounded_loading_button: ^2.1.0
   shared_preferences: ^2.0.15
+  webview_flutter: ^3.0.4
 
 dev_dependencies:
   flutter_lints: ^2.0.0

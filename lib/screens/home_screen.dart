@@ -7,9 +7,11 @@ import 'package:flutterauth/screens/google_maps.dart';
 import 'package:flutterauth/screens/image_upload_screen.dart';
 import 'package:flutterauth/screens/login_screen.dart';
 import 'package:flutterauth/screens/show_images.dart';
+import 'package:flutterauth/screens/webview.dart';
 import 'package:flutterauth/utils/next_screen.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../model/push_notification.dart';
 
@@ -255,6 +257,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: const Text(
                 "Open Google Maps",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                nextScreen(context, const WebViewScreen());
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+              ),
+              child: const Text(
+                "WebView",
                 style: TextStyle(color: Colors.white),
               ),
             ),
