@@ -9,9 +9,12 @@ import 'package:flutterauth/screens/login_screen.dart';
 import 'package:flutterauth/screens/show_images.dart';
 import 'package:flutterauth/screens/webview.dart';
 import 'package:flutterauth/utils/next_screen.dart';
+import 'package:flutterauth/utils/snack_bar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../model/push_notification.dart';
 
@@ -31,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late BannerAd _bannerAd;
   bool _isAdLoaded = false;
+  String TAG = "BackGround_Work";
+  int _counterValue = 0;
 
   _initBannerAd() {
     _bannerAd = BannerAd(
@@ -150,7 +155,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _initBannerAd();
     getData();
+
+    Workmanager().registerPeriodicTask(
+      TAG,
+      "simplePeriodicTask",
+      initialDelay: Duration(seconds: 10),
+    );
+    loadData();
     super.initState();
+  }
+
+  void loadData() async {
+    _counterValue = await BackGroundWork.instance.getBackGroundCounterValue();
+    setState(() {});
   }
 
   @override
@@ -162,6 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            Text("Counter Value: ${_counterValue}"),
             CircleAvatar(
               backgroundColor: Colors.white,
               backgroundImage: NetworkImage("${sp.imageUrl}"),
@@ -299,5 +317,25 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           : const SizedBox(),
     );
+  }
+}
+
+class BackGroundWork {
+  BackGroundWork._privateConstructor();
+
+  static final BackGroundWork _instance = BackGroundWork._privateConstructor();
+
+  static BackGroundWork get instance => _instance;
+
+  loadCounterValue(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('BackGroundCounterValue', value);
+  }
+
+  Future<int> getBackGroundCounterValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return bool
+    int counterValue = prefs.getInt('BackGroundCounterValue') ?? 0;
+    return counterValue;
   }
 }
