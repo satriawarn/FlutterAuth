@@ -2,10 +2,12 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterauth/provider/sign_in_provider.dart';
 import 'package:flutterauth/screens/google_maps.dart';
 import 'package:flutterauth/screens/image_upload_screen.dart';
 import 'package:flutterauth/screens/login_screen.dart';
+import 'package:flutterauth/screens/method_channel.dart';
 import 'package:flutterauth/screens/show_images.dart';
 import 'package:flutterauth/screens/webview.dart';
 import 'package:flutterauth/utils/next_screen.dart';
@@ -179,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text("Counter Value: ${_counterValue}"),
+            Text("Counter Value: $_counterValue"),
             CircleAvatar(
               backgroundColor: Colors.white,
               backgroundImage: NetworkImage("${sp.imageUrl}"),
@@ -290,6 +292,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: const Text(
                 "WebView",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                nextScreen(context, const MethodChannelScreen());
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+              ),
+              child: const Text(
+                "Method Channel",
                 style: TextStyle(color: Colors.white),
               ),
             ),
